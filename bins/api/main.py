@@ -26,4 +26,4 @@ async def input():
     return str(bin)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app")#, port=int(os.getenv('APP_PORT')), host='0.0.0.0')
+    uvicorn.run("main:app", port=8000, host='0.0.0.0')

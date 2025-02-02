@@ -2,24 +2,24 @@ FROM python:3.12-slim AS compile-image
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends build-essential gcc g++ 
 
-COPY requirements.txt .
-RUN pip install --user -r requirements.txt
+COPY requirements.txt requirements.txt
 
-COPY setup.py .
-COPY myapp/ .
-RUN pip install --user .
+RUN python -m venv /opt/venv
+# Make sure we use the virtualenv:
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install -r requirements.txt
 
 FROM python:3.12-slim AS build-image
-COPY --from=compile-image /root/.local /root/.local
+COPY --from=compile-image /opt/venv /opt/venv
 
 # Make sure scripts in .local are usable:
-ENV PATH=/root/.local/bin:$PATH
-
-RUN useradd bins
-
-WORKDIR /home/bins
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY main.py main.py
+COPY config.yaml config.yaml
 RUN chmod +x main.py
+
+# Expose the port on which the application will run
+EXPOSE 80
 
 CMD [ "python", "./main.py" ]
