@@ -1,6 +1,6 @@
 FROM python:3.12-slim AS compile-image
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends build-essential gcc g++ 
+RUN apt-get install -y --no-install-recommends build-essential gcc g++  nano vim
 
 COPY requirements.txt requirements.txt
 
